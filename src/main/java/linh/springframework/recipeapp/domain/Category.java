@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+
 @Data
 @EqualsAndHashCode(exclude = {"recipes"})
 @Entity
