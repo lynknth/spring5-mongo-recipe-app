@@ -1,5 +1,6 @@
 package linh.springframework.recipeapp.converters;
 
+import linh.springframework.recipeapp.commands.CategoryCommand;
 import linh.springframework.recipeapp.commands.RecipeCommand;
 import linh.springframework.recipeapp.domain.Recipe;
 import lombok.Synchronized;
@@ -9,13 +10,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RecipeCommandToRecipe implements Converter<RecipeCommand, Recipe> {
-    private final CategoryCommandToCategory categoryConveter;
+    private final CategoryCommandToCategory categoryConverter;
     private final IngredientCommandToIngredient ingredientConverter;
     private final NotesCommandToNotes notesConverter;
 
-    public RecipeCommandToRecipe(CategoryCommandToCategory categoryConveter, IngredientCommandToIngredient ingredientConverter,
+    public RecipeCommandToRecipe(CategoryCommandToCategory categoryConverter, IngredientCommandToIngredient ingredientConverter,
                                  NotesCommandToNotes notesConverter) {
-        this.categoryConveter = categoryConveter;
+        this.categoryConverter = categoryConverter;
         this.ingredientConverter = ingredientConverter;
         this.notesConverter = notesConverter;
     }
@@ -42,7 +43,7 @@ public class RecipeCommandToRecipe implements Converter<RecipeCommand, Recipe> {
 
         if (source.getCategories() != null && source.getCategories().size() > 0){
             source.getCategories()
-                    .forEach( category -> recipe.getCategories().add(categoryConveter.convert(category)));
+                    .forEach((CategoryCommand category) -> recipe.getCategories().add(categoryConverter.convert(category)));
         }
 
         if (source.getIngredients() != null && source.getIngredients().size() > 0){

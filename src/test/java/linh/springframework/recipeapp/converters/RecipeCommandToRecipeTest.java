@@ -8,6 +8,7 @@ import linh.springframework.recipeapp.domain.Difficulty;
 import linh.springframework.recipeapp.domain.Recipe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.lang.Nullable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,6 +45,7 @@ class RecipeCommandToRecipeTest {
     }
 
     @Test
+    @Nullable
     public void testEmptyObject() throws Exception {
         assertNotNull(converter.convert(new RecipeCommand()));
     }
@@ -102,5 +104,4 @@ class RecipeCommandToRecipeTest {
         assertEquals(2, recipe.getCategories().size());
         assertEquals(2, recipe.getIngredients().size());
     }
-
 }
