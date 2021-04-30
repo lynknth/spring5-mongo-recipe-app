@@ -4,6 +4,7 @@ import linh.springframework.recipeapp.commands.RecipeCommand;
 import linh.springframework.recipeapp.converters.RecipeCommandToRecipe;
 import linh.springframework.recipeapp.converters.RecipeToRecipeCommand;
 import linh.springframework.recipeapp.domain.Recipe;
+import linh.springframework.recipeapp.exceptions.NotFoundException;
 import linh.springframework.recipeapp.repositories.RecipeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.util.AssertionErrors.assertNotNull;
 
@@ -32,7 +33,7 @@ class RecipeServiceImplTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
 
         recipeService = new RecipeServiceImpl(recipeRepository, recipeCommandToRecipe, recipeToRecipeCommand);
     }
@@ -53,7 +54,7 @@ class RecipeServiceImplTest {
     }
 
     @Test
-    public void getRecipeCoomandByIdTest() throws Exception {
+    public void getRecipeCommandByIdTest() throws Exception {
         Recipe recipe = new Recipe();
         recipe.setId(1L);
         Optional<Recipe> recipeOptional = Optional.of(recipe);
@@ -71,7 +72,27 @@ class RecipeServiceImplTest {
         verify(recipeRepository, times(1)).findById(anyLong());
         verify(recipeRepository, never()).findAll();
     }
+    @Test
+    public void getRecipeByIdTestNotFound() throws Exception{
 
+//        Optional<Recipe> recipeOptional = Optional.empty();
+//
+//        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+//
+//        Recipe recipeReturned = recipeService.findById(1L);
+        Optional<Recipe> recipeOptional = Optional.empty();
+
+        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+
+        // when
+        NotFoundException notFoundException = assertThrows(
+                NotFoundException.class, () -> recipeService.findById(1L),
+                "Expected exception to throw an error. But it didn't");
+
+        // then
+        assertTrue(notFoundException.getMessage().contains("Recipe Not Found"));
+
+    }
     @Test
     public void getRecipesTest() throws Exception {
 

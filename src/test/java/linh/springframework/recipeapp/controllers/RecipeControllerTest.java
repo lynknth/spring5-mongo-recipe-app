@@ -2,6 +2,7 @@ package linh.springframework.recipeapp.controllers;
 
 import linh.springframework.recipeapp.commands.RecipeCommand;
 import linh.springframework.recipeapp.domain.Recipe;
+import linh.springframework.recipeapp.exceptions.NotFoundException;
 import linh.springframework.recipeapp.services.RecipeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,22 @@ class RecipeControllerTest {
                 .andExpect(view().name("recipe/show"))
                 .andExpect(model().attributeExists("recipe"));
     }
+    @Test
+    public void testGetRecipeNotFound() throws Exception {
 
+        when(recipeService.findById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/1/show"))
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("404error"));
+    }
+    @Test
+    public void testGetRecipeNumberFormatException() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/hgi/show"))
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("400error"));
+    }
     @Test
     public void testGetNewRecipeForm() throws Exception {
         RecipeCommand command = new RecipeCommand();
